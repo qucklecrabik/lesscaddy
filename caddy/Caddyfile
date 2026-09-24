@@ -1,0 +1,40 @@
+{
+	email {$ACME_EMAIL}
+	default_bind 127.0.0.1
+	http_port 8080
+	https_port 8443
+	auto_https disable_redirects
+
+	servers {
+		listener_wrappers {
+			proxy_protocol {
+				timeout 5s
+				allow 127.0.0.1/32
+			}
+			tls
+		}
+		protocols h1 h2
+	}
+}
+
+{$DOMAIN} {
+	tls {
+		dns cloudflare {env.CF_API_TOKEN}
+		resolvers 1.1.1.1 1.0.0.1
+	}
+
+	root * /srv/site
+	encode zstd gzip
+	file_server
+
+	header {
+		-Server
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options nosniff
+	}
+
+	# Non-existent paths — redirect to the homepage to avoid showing the default Caddy 404 page.
+	handle_errors {
+		redir * / 302
+	}
+}

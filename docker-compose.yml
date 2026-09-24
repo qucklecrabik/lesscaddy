@@ -1,0 +1,31 @@
+services:
+  # Disposable container: downloads an archive of templates and places a random one in ./site
+  site-init:
+    image: alpine:3.24
+    environment:
+      - TEMPLATES_URL=${TEMPLATES_URL:-https://github.com/learning-zone/website-templates/archive/refs/heads/master.zip}
+      - FORCE=${FORCE:-0}
+    volumes:
+      - ./site:/srv/site
+      - ./scripts:/scripts:ro
+    command: ["/bin/sh", "/scripts/fetch-site.sh"]
+    restart: "no"
+
+  caddy:
+    build: ./caddy
+    image: caddy-cloudflare:local
+    network_mode: host
+    depends_on:
+      site-init:
+        condition: service_completed_successfully
+    env_file: .env
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./site:/srv/site:ro
+      - ./caddy_data:/data
+      - caddy_config:/config
+    restart: unless-stopped
+
+volumes:
+  caddy_data:
+  caddy_config:

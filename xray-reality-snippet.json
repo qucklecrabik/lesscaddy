@@ -1,0 +1,25 @@
+{
+  "tag": "vless-reality",
+  "listen": "0.0.0.0",
+  "port": 443,
+  "protocol": "vless",
+  "settings": {
+    "clients": [
+      { "id": "UUID-CLIENT", "flow": "xtls-rprx-vision" }
+    ],
+    "decryption": "none"
+  },
+  "streamSettings": {
+    "network": "tcp",
+    "security": "reality",
+    "realitySettings": {
+      "show": false,
+      "dest": "127.0.0.1:8443",
+      "xver": 1,
+      "serverNames": ["site.example.com"],
+      "privateKey": "PRIVATE_KEY_from_xray_x25519",
+      "shortIds": ["", "0123456789abcdef"]
+    }
+  },
+  "sniffing": { "enabled": true, "destOverride": ["http", "tls", "quic"] }
+}
