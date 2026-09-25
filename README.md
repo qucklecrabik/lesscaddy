@@ -52,4 +52,4 @@ Configuration is supplied through `.env`. Do not commit secrets or private crede
 
 ## License
 
-No license has been specified yet.
+This project is licensed under the MIT License — see [LICENSE](LICENSE).
